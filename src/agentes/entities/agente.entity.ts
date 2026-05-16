@@ -1,31 +1,31 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 export enum Status {
-    ATIVO = "ativo",
-    INATIVO = "inativo"
+    ACTIVE = "active",
+    INACTIVE = "inactive"
 }
 
-@Entity({ name: "tb_agentes" })
+@Entity({ name: "tb_agents" })
 export class Agente {
 
     @PrimaryGeneratedColumn()
     id: number
 
     @Column({ length: 250, nullable: false })
-    nome: string
+    name: string
 
     @Column({ length: 250, nullable: false })
-    descricao: string
+    description: string
 
-    @Column({ name: "prompt_principal", nullable: false })
-    promptPrincipal: string
+    @Column({ name: "system_prompt", nullable: false })
+    systemPrompt: string
 
-    @Column({ name: "max_tokens_execucao", type: "int", nullable: false})
-    maxTokensExecucao: number
+    @Column({ name: "max_tokens_per_execution", type: "int", nullable: false})
+    maxTokensPerExecution: number
 
-    @Column({ name: "limite_mensal_tokens", type: "int", nullable: false})
-    limiteMensalTokens: number
+    @Column({ name: "monthly_token_limit", type: "int", nullable: false})
+    monthlyTokenLimit: number
 
-    @Column({ type: "enum", enum: Status, default: Status.ATIVO})
+    @Column({ type: "enum", enum: Status, default: Status.ACTIVE})
     status: Status
 }

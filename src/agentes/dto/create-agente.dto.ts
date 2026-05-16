@@ -6,23 +6,23 @@ export class CreateAgenteDto {
     @IsString()
     @IsNotEmpty()
     @Transform(({ value }: TransformFnParams) => value?.trim())
-    readonly nome: string
+    readonly name: string
 
     @IsString()
     @IsNotEmpty()
-    readonly descricao: string
+    readonly description: string
 
     @IsString()
     @IsNotEmpty()
-    readonly promptPrincipal: string
+    readonly systemPrompt: string
 
     @IsInt()
     @Min(0)
-    readonly maxTokensExecucao: number
+    readonly maxTokensPerExecution: number
 
     @IsInt()
     @Min(0)
-    readonly limiteMensalTokens: number
+    readonly monthlyTokenLimit: number
 
     @IsOptional()
     @IsEnum(Status)    
