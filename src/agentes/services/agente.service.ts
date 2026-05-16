@@ -14,7 +14,7 @@ export class AgenteService {
     ) { }
 
     async findAll(): Promise<Agente[]> {
-        return this.agenteRepository.find()
+        return await this.agenteRepository.find()
     }
 
     async findById(id: number): Promise<Agente> {

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post } from "@nestjs/common";
 import { AgenteService } from "../services/agente.service";
 import { CreateAgenteDto } from "../dto/create-agente.dto";
 import { UpdateAgenteDto } from "../dto/update-agente.dto";
@@ -29,7 +29,7 @@ export class AgenteController {
         return this.agenteService.create(agente)
     }
 
-    @Put("/:id")
+    @Patch("/:id")
     @HttpCode(HttpStatus.OK)
     update(@Param("id", ParseIntPipe) id: number, @Body() agente: UpdateAgenteDto) {
         return this.agenteService.update(id, agente)
