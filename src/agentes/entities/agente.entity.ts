@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Execucao } from "../../execucoes/entities/execucao.entity";
 
 export enum Status {
     ACTIVE = "active",
@@ -20,12 +21,15 @@ export class Agente {
     @Column({ name: "system_prompt", nullable: false })
     systemPrompt: string
 
-    @Column({ name: "max_tokens_per_execution", type: "int", nullable: false})
+    @Column({ name: "max_tokens_per_execution", type: "int", nullable: false })
     maxTokensPerExecution: number
 
-    @Column({ name: "monthly_token_limit", type: "int", nullable: false})
+    @Column({ name: "monthly_token_limit", type: "int", nullable: false })
     monthlyTokenLimit: number
 
-    @Column({ type: "enum", enum: Status, default: Status.ACTIVE})
+    @Column({ type: "enum", enum: Status, default: Status.ACTIVE })
     status: Status
+
+    @OneToMany(() => Execucao, (execution) => execution.agent)
+    executions: Execucao[]
 }
