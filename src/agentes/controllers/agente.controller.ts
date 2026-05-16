@@ -3,7 +3,7 @@ import { AgenteService } from "../services/agente.service";
 import { CreateAgenteDto } from "../dto/create-agente.dto";
 import { UpdateAgenteDto } from "../dto/update-agente.dto";
 
-@Controller("/agentes")
+@Controller("/agents")
 
 export class AgenteController {
 

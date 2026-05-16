@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Agente } from "../../agentes/entities/agente.entity";
 
 @Entity({ name: "tb_executions" })
@@ -24,6 +24,9 @@ export class Execucao {
 
     @Column({ name: "execution_time_ms", type: "int", nullable: false })
     executionTimeMs: number
+
+    @CreateDateColumn({ name: "created_at" })
+    createdAt: Date
 
     @ManyToOne(() => Agente, (agent) => agent.executions, {
         onDelete: "CASCADE"

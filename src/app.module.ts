@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AgentesModule } from './agentes/agentes.module';
+import { ExecucoesModule } from './execucoes/execucoes.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,6 +27,7 @@ import { AgentesModule } from './agentes/agentes.module';
       }),      
     }),
     AgentesModule,
+    ExecucoesModule,
   ],
   controllers: [],
   providers: [],
