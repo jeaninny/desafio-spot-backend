@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AgentesModule } from './agentes/agentes.module';
 import { ExecucoesModule } from './execucoes/execucoes.module';
+import { AuthModule } from './auth/auth.module';
+import { UsuarioModule } from './usuarios/usuarios.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -24,12 +26,14 @@ import { ExecucoesModule } from './execucoes/execucoes.module';
         autoLoadEntities: true,
         migrations: [__dirname + '/migrations/**/*{.js,.ts}'],
         migrationsTableName: 'migrations',
-      }),      
+      }),
     }),
     AgentesModule,
     ExecucoesModule,
+    UsuarioModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}
