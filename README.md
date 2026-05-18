@@ -1,98 +1,254 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Desafio Back-end — SPOT Metrics
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+<br />
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<div align="center">
+  <img src="https://img.shields.io/github/languages/top/jeaninny/desafio-spot-backend?style=flat-square" />
+  <img src="https://img.shields.io/github/repo-size/jeaninny/desafio-spot-backend?style=flat-square" />
+  <img src="https://img.shields.io/github/languages/count/jeaninny/desafio-spot-backend?style=flat-square" />
+  <img src="https://img.shields.io/github/last-commit/jeaninny/desafio-spot-backend?style=flat-square" />
 
-## Description
+</div>
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+<br />
 
-## Project setup
+## Descrição
 
-```bash
-$ npm install
+API REST para gerenciamento de **Agentes de Inteligência Artificial** desenvolvida como parte do processo seletivo de estágio backend da SPOT Metrics.
+
+A API permite o cadastro de agentes, o registro de execuções e o acompanhamento do consumo de tokens.
+
+---
+
+## Tecnologias Utilizadas
+
+| Item                | Descrição                           |
+| ------------------- | ----------------------------------- |
+| **Runtime**         | Node.js                             |
+| **Linguagem**       | TypeScript                          |
+| **Framework**       | NestJS                              |
+| **ORM**             | TypeORM                             |
+| **Banco de Dados**  | PostgreSQL 18                       |
+| **Autenticação**    | JWT + Passport                      |
+| **Validação**       | class-validator + class-transformer |
+| **Documentação**    | Swagger (OpenAPI)                   |
+| **Testes**          | Jest + SuperTest                    |
+| **Containerização** | Docker + Docker Compose             |
+
+---
+
+## Arquitetura do Projeto
+
+O projeto utiliza a arquitetura modular do NestJS, com três domínios principais: **Agentes**, **Execuções** e **Usuários**.
+
+Cada módulo possui separação de responsabilidades:
+
+- **Controller** → recebe e trata as requisições HTTP
+- **Service** → contém as regras de negócio
+- **Entity** → representa as tabelas do banco de dados
+- **Repository do ORM** → comunicação com o banco de dados
+
+---
+
+## Diagrama Entidade-Relacionamento
+
+```mermaid
+erDiagram
+
+tb_users {
+  INT id PK
+  VARCHAR name
+  VARCHAR email
+  VARCHAR password
+}
+
+tb_agents {
+  INT id PK
+  VARCHAR name
+  VARCHAR description
+  VARCHAR system_prompt
+  INT max_tokens_per_execution
+  INT monthly_token_limit
+  ENUM status
+}
+
+tb_executions {
+  INT id PK
+  VARCHAR input_message
+  VARCHAR output_message
+  INT input_tokens
+  INT output_tokens
+  INT total_tokens
+  INT execution_time_ms
+  TIMESTAMP created_at
+  INT agentId FK
+}
+
+tb_agents ||--o{ tb_executions : registra
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+## Fluxo de Autenticação (JWT)
 
-# watch mode
-$ npm run start:dev
+A API utiliza **JSON Web Token (JWT)** com a biblioteca **Passport** para proteger os endpoints.
 
-# production mode
-$ npm run start:prod
+### Como autenticar:
+
+**1. Cadastre um usuário:**
+
+```http
+POST /users
+Content-Type: application/json
+
+{
+  "name": "Seu Nome",
+  "email": "seu@email.com",
+  "password": "suasenha"
+}
 ```
 
-## Run tests
+**2. Faça login para obter o token:**
+```http
+POST /auth/login
+Content-Type: application/json
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+{
+  "email": "seu@email.com",
+  "password": "suasenha"
+}
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+A resposta retornará um token no formato:
+```json
+{
+  "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+**3. Use o token nas requisições protegidas:**
+```http
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
 
-## Resources
+> O token expira em **1 hora**. Após expirar, faça login novamente.
 
-Check out a few resources that may come in handy when working with NestJS:
+---
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Pré-requisitos
 
-## Support
+- Node.js 24+
+- npm
+- Docker e Docker Compose
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+## Como Executar o Projeto
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### 1. Clone o repositório
 
-## License
+```bash
+git clone https://github.com/jeaninny/desafio-spot-backend.git
+cd desafio-spot-backend
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### 2. Configure as variáveis de ambiente
+
+Com base no `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+Preencha o `JWT_SECRET` no `.env`.
+
+### 3. Suba o banco de dados
+
+```bash
+docker compose up --build -d
+```
+
+Isso irá criar automaticamente os bancos `spot_jeaninny` (principal) e `spot_test_jeaninny` (testes).
+
+> **Atenção:** se já tiver um volume anterior com o mesmo nome, rode `docker compose down` antes de subir novamente.
+
+### 4. Instale as dependências
+
+```bash
+npm install
+```
+
+### 5. Execute a aplicação
+
+```bash
+npm run start:dev
+```
+
+As migrations serão executadas automaticamente na inicialização da aplicação por meio da configuração migrationsRun: true do TypeORM.
+
+A API estará disponível em: `http://localhost:3000`
+
+---
+
+## Documentação da API
+
+Com a aplicação rodando, acesse o Swagger em:
+
+```
+http://localhost:3000/swagger
+```
+
+---
+
+## Endpoints Principais
+
+| Método | Endpoint                       | Descrição                         | Auth |
+| ------ | ------------------------------ | --------------------------------- | ---- |
+| POST   | /users                         | Cadastrar usuário                 | ❌    |
+| POST   | /auth/login                    | Login e geração do token JWT      | ❌    |
+| GET    | /agents                        | Listar agentes                    | ✅    |
+| POST   | /agents                        | Cadastrar agente                  | ✅    |
+| GET    | /agents/:id                    | Buscar agente por ID              | ✅    |
+| PATCH  | /agents/:id                    | Atualizar agente                  | ✅    |
+| DELETE | /agents/:id                    | Remover agente                    | ✅    |
+| GET    | /executions                    | Listar execuções                  | ✅    |
+| POST   | /executions                    | Registrar execução                | ✅    |
+| GET    | /executions/:id                | Buscar execução por ID            | ✅    |
+| GET    | /executions/efficiency-ranking | Ranking de eficiência dos agentes | ✅    |
+
+---
+
+## Regras de Negócio
+
+- `totalTokens` é calculado automaticamente como `inputTokens + outputTokens`
+- O total de tokens não pode ultrapassar o limite máximo por execução do agente
+- O consumo acumulado no mês não pode ultrapassar o limite mensal do agente
+- Agentes inativos não podem registrar novas execuções
+- Execuções são imutáveis — não há endpoints de update ou delete
+
+---
+
+## Como Rodar os Testes
+
+### Testes unitários
+
+```bash
+npm run test
+```
+
+### Testes de integração (e2e)
+
+Com o Docker rodando e a aplicação **parada**:
+
+```bash
+npm run test:e2e
+```
+
+---
+
+## Autora
+
+**Jeaninny Teixeira**
+
+🔗 **GitHub:** https://github.com/jeaninny  
+🔗 **LinkedIn:** https://www.linkedin.com/in/jeaninnyteixeira
