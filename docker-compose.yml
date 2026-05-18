@@ -1,16 +1,17 @@
 services:  
   postgres:
-    image: postgres
+    image: postgres:18
     container_name: nestjs_postgres
     ports:
       - 5432:5432
     environment:
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: docker
-      POSTGRES_DB: spot      
+      POSTGRES_DB: spot_jeaninny      
 
     volumes:
-      - spot:/var/lib/postgresql
+      - spot_jeaninny:/var/lib/postgresql
+      - ./docker/init.sh:/docker-entrypoint-initdb.d/init.sh
 
 volumes:
-  spot:
+  spot_jeaninny:
