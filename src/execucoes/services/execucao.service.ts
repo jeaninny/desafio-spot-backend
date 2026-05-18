@@ -13,7 +13,7 @@ export class ExecucaoService {
     @InjectRepository(Execucao)
     private execucaoRepository: Repository<Execucao>,
     private readonly agenteService: AgenteService,
-  ) {}
+  ) { }
 
   async findAll(): Promise<Execucao[]> {
     return await this.execucaoRepository.find({
@@ -74,7 +74,7 @@ export class ExecucaoService {
   private async _validateExecution(agent: Agente, totalTokens: number) {
     this._verifyAgentStatus(agent);
     this._validateTokenLimits(totalTokens, agent);
-    await this._validateMonthlyTokenConsumption(agent);
+    await this._validateMonthlyTokenConsumption(totalTokens, agent);
   }
 
   private _verifyAgentStatus(agent: Agente) {
@@ -89,7 +89,7 @@ export class ExecucaoService {
     }
   }
 
-  private async _validateMonthlyTokenConsumption(agent: Agente) {
+  private async _validateMonthlyTokenConsumption(totalTokens: number, agent: Agente) {
     const firstDayOfMonth = startOfMonth(new Date());
     const lastDayOfMonth = endOfMonth(new Date());
 
@@ -100,12 +100,12 @@ export class ExecucaoService {
         firstDayOfMonth,
         lastDayOfMonth,
       })
-      .select('SUM(execution.totalTokens)', 'sumTokens')
+      .select('SUM(execution.totalTokens)', 'sumDbTokens')
       .getRawOne();
 
-    const sumTokens = Number(monthToDateConsumption.sumTokens);
+    const sumDbTokens = Number(monthToDateConsumption.sumDbTokens);
 
-    if (sumTokens > agent.monthlyTokenLimit) {
+    if (sumDbTokens + totalTokens > agent.monthlyTokenLimit) {
       throw new BadRequestException(
         'O consumo acumulado no mês não pode ultrapassar o limite mensal definido para o agente',
       );

@@ -152,7 +152,7 @@ describe('ExecucaoService', () => {
             where: jest.fn().mockReturnThis(),
             andWhere: jest.fn().mockReturnThis(),
             select: jest.fn().mockReturnThis(),
-            getRawOne: jest.fn().mockResolvedValue({ sumTokens: '5000' }),
+            getRawOne: jest.fn().mockResolvedValue({ sumDbTokens: '5000' }),
         }
 
         jest.spyOn(agenteService, 'findById').mockResolvedValue(mockAgent as any)
@@ -186,7 +186,7 @@ describe('ExecucaoService', () => {
             where: jest.fn().mockReturnThis(),
             andWhere: jest.fn().mockReturnThis(),
             select: jest.fn().mockReturnThis(),
-            getRawOne: jest.fn().mockResolvedValue({ sumTokens: '100' }),
+            getRawOne: jest.fn().mockResolvedValue({ sumDbTokens: '100' }),
         }
 
         const mockExecution = {
